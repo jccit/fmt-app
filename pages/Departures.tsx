@@ -1,14 +1,15 @@
 import React from 'react';
-import { Text } from 'react-native';
 import { gql, useQuery } from '@apollo/client';
-import { List } from 'react-native-paper';
+import { Text, List } from 'react-native-paper';
 
 interface IDepartureItemProps {
   scheduledDeparture: string;
+  serviceID: string;
   platform: string;
   destination: {
     name: string;
   }
+  navigation: any;
 }
 
 const DepartureItem = (props: IDepartureItemProps) => {
@@ -16,14 +17,18 @@ const DepartureItem = (props: IDepartureItemProps) => {
     <List.Item
       title={`${props.scheduledDeparture} - ${props.destination.name}`}
       description={`Platform ${props.platform || 'unknown'}`}
+      onPress={() => props.navigation.navigate('Service', { id: props.serviceID })}
     />
   )
 }
 
-const Departures = () => {
+const Departures = (props: any) => {
+  const { navigation } = props;
   const { loading, data } = useQuery(gql`
     query GetDepartures {
       departures(crs: "sop") {
+        id
+        serviceID
         scheduledDeparture
         platform
         destination {
@@ -45,7 +50,7 @@ const Departures = () => {
     return (
       <List.Section>
         {data.departures.map((departure: IDepartureItemProps, key: number) => {
-          return <DepartureItem {...departure} key={key} />
+          return <DepartureItem {...departure} navigation={navigation} key={key} />
         })}
       </List.Section>
     );
