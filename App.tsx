@@ -17,6 +17,8 @@ import CustomNavigationBar from './components/CustomNavigationBar';
 import merge from 'deepmerge';
 import { PreferencesContext } from './PreferencesContext';
 import Service from './pages/Service';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack/lib/typescript/src/types';
+import { StatusBar } from 'expo-status-bar';
 
 const client = new ApolloClient({
   uri: 'https://fmt-graphql.fly.dev',
@@ -46,10 +48,11 @@ export default function App() {
       <ApolloProvider client={client}>
         <PaperProvider theme={theme}>
           <NavigationContainer theme={theme}>
+            <StatusBar style="light" />
             <Stack.Navigator
               initialRouteName="Departures"
               screenOptions={{
-                header: (props: any) => <CustomNavigationBar {...props} />
+                header: (props: NativeStackHeaderProps) => <CustomNavigationBar {...props} />,
               }}
             >
               <Stack.Screen name="Departures" component={Departures} />

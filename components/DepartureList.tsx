@@ -1,7 +1,7 @@
-import React from 'react';
-import { gql, useQuery } from '@apollo/client';
+import React, { useState } from 'react';
+import { gql, useQuery, NetworkStatus } from '@apollo/client';
 import { Text, List } from 'react-native-paper';
-import { FlatList } from 'react-native';
+import { FlatList, RefreshControl } from 'react-native';
 
 interface IDepartureItemProps {
   scheduledDeparture: string;
@@ -30,7 +30,8 @@ interface IDepartureListProps {
 
 const DepartureList = (props: IDepartureListProps) => {
   const { navigation, crs } = props;
-  const { loading, data } = useQuery(gql`
+  const [refreshing, setRefresh] = useState(false);
+  const { loading, data, refetch, networkStatus } = useQuery(gql`
     query GetDepartures($crs: String!) {
       departures(crs: $crs) {
         id
@@ -46,16 +47,20 @@ const DepartureList = (props: IDepartureListProps) => {
     variables: { crs },
   });
 
-  console.log(data);
+  const renderItem = ({ item }: { item: any }) => {
+    return <DepartureItem {...item} navigation={navigation} />
+  }
 
-  if (loading) {
+  const onRefresh = async () => {
+    setRefresh(true);
+    await refetch();
+    setRefresh(false);
+  }
+
+  if (loading && networkStatus != NetworkStatus.refetch) {
     return (
       <Text>Loading</Text>
     )
-  }
-
-  const renderItem = ({ item }: { item: any }) => {
-    return <DepartureItem {...item} navigation={navigation} />
   }
 
   if (data && data.departures) {
@@ -64,6 +69,12 @@ const DepartureList = (props: IDepartureListProps) => {
         data={data.departures}
         renderItem={renderItem}
         keyExtractor={(item: any) => item.id}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
       />
     )
   }

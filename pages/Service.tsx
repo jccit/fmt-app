@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { List, Text } from 'react-native-paper';
-import { FlatList } from 'react-native';
-import { useQuery, gql } from '@apollo/client';
+import { FlatList, RefreshControl } from 'react-native';
+import { useQuery, gql, NetworkStatus } from '@apollo/client';
 
 const Service = (props: { route: any }) => {
   const { route } = props;
   const { id } = route.params;
-
-  const { loading, data } = useQuery(gql`
+  const [refreshing, setRefreshing] = useState(false);
+  const { loading, data, refetch, networkStatus } = useQuery(gql`
     query GetService($id: ID!) {
       service(id: $id) {
         id
@@ -19,6 +19,7 @@ const Service = (props: { route: any }) => {
           name
           scheduledTime
           estimatedTime
+          actualTime
         }
       }
     }
@@ -26,22 +27,47 @@ const Service = (props: { route: any }) => {
     variables: { id }
   });
 
-  if (loading) {
-    return (
-      <Text>Loading</Text>
-    )
+  const getTime = (item: any): string => {
+    if (item.estimatedTime === 'On time') {
+      return `Due at ${item.scheduledTime}`;
+    }
+
+    if (item.actualTime === 'On time') {
+      return `Arrived at ${item.scheduledTime}`;
+    }
+
+    if (item.actualTime === '' && item.estimatedTime !== 'On time') {
+      return `Due at ${item.estimatedTime}, scheduled at ${item.scheduledTime}`;
+    }
+
+    if (item.actualTime !== 'On time' && item.estimatedTime === '') {
+      return `Arrived at ${item.estimatedTime}, scheduled at ${item.scheduledTime}`;
+    }
+
+    return item.scheduledTime;
   }
+
+  const hasArrived = (item: any): boolean => item.actualTime !== '';
 
   const renderItem = ({ item }: { item: any }) => {
     return (
       <List.Item
         title={item.name}
-        description={
-          item.estimatedTime === 'On time' ?
-          item.scheduledTime :
-          `${item.estimatedTime}, scheduled at ${item.scheduledTime}`}
+        description={getTime(item)}
       />
     );
+  }
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  }
+
+  if (loading && networkStatus != NetworkStatus.refetch) {
+    return (
+      <Text>Loading</Text>
+    )
   }
 
   if (data) {
@@ -54,7 +80,13 @@ const Service = (props: { route: any }) => {
         <FlatList
           data={callingPoints}
           renderItem={renderItem}
-          
+          keyExtractor={(item, _) => item.crs}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
+          }
         />
       </>
     );
