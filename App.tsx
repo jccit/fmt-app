@@ -19,11 +19,14 @@ import { PreferencesContext } from './PreferencesContext';
 import Service from './pages/Service';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack/lib/typescript/src/types';
 import { StatusBar } from 'expo-status-bar';
+import * as Linking from 'expo-linking';
 
 const client = new ApolloClient({
   uri: 'https://fmt-graphql.fly.dev',
   cache: new InMemoryCache(),
 });
+
+const prefix = Linking.createURL('/');
 
 const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
 const CombinedDarkTheme = merge(PaperDarkTheme, NavigationDarkTheme);
@@ -43,11 +46,21 @@ export default function App() {
     [isThemeDark]
   );
 
+  const linking = {
+    prefixes: [prefix],
+    config: {
+      screens: {
+        Departures: '',
+        Service: 'service/:id'
+      }
+    }
+  }
+
   return (
     <PreferencesContext.Provider value={preferences}>
       <ApolloProvider client={client}>
         <PaperProvider theme={theme}>
-          <NavigationContainer theme={theme}>
+          <NavigationContainer linking={linking} theme={theme}>
             <StatusBar style="light" />
             <Stack.Navigator
               initialRouteName="Departures"
