@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "fmt-app",
+    "name": "Train Finder",
     "slug": "fmt-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -23,7 +23,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "dev.jcit.trainfinder"
     },
     "web": {
       "favicon": "./assets/favicon.png"

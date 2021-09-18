@@ -4903,6 +4903,11 @@ react-native-iphone-x-helper@^1.3.1:
   resolved "https://registry.yarnpkg.com/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.3.1.tgz#20c603e9a0e765fd6f97396638bdeb0e5a60b010"
   integrity sha512-HOf0jzRnq2/aFUcdCJ9w9JGzN3gdEg0zFE4FyYlp4jtidqU03D5X7ZegGKfT1EWteR0gPBGp9ye5T5FvSWi9Yg==
 
+react-native-paper-autocomplete@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/react-native-paper-autocomplete/-/react-native-paper-autocomplete-0.2.1.tgz#182e4b27a4ffb92b3fecd20ed92a4936509cd39c"
+  integrity sha512-1bquu36J7Tkk1B1Ge9gADLU+7tGPZjO2/3BD+Ot6zINki5qCeq4Nqpdj7xdchkjDv5gSywAY5tThHtljZer6cA==
+
 react-native-paper@^4.9.2:
   version "4.9.2"
   resolved "https://registry.yarnpkg.com/react-native-paper/-/react-native-paper-4.9.2.tgz#6ecdd81acf2cf4d6d5f0247d4c1812dea93eade0"
