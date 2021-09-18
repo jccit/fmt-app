@@ -1,5 +1,6 @@
 import React from 'react';
 import { List, Text } from 'react-native-paper';
+import { FlatList } from 'react-native';
 import { useQuery, gql } from '@apollo/client';
 
 const Service = (props: { route: any }) => {
@@ -31,6 +32,18 @@ const Service = (props: { route: any }) => {
     )
   }
 
+  const renderItem = ({ item }: { item: any }) => {
+    return (
+      <List.Item
+        title={item.name}
+        description={
+          item.estimatedTime === 'On time' ?
+          item.scheduledTime :
+          `${item.estimatedTime}, scheduled at ${item.scheduledTime}`}
+      />
+    );
+  }
+
   if (data) {
     const callingPoints = data.service.subsequentCallingPoints;
     const destination = callingPoints[callingPoints.length - 1];
@@ -38,18 +51,11 @@ const Service = (props: { route: any }) => {
     return (
       <>
         <Text>{data.service.scheduledDeparture} to {destination.name}</Text>
-        <List.Section>
-          <List.Subheader>Calling Points</List.Subheader>
-          {callingPoints.map((callingPoint: any, key: number) => (
-            <List.Item
-              title={callingPoint.name}
-              description={
-                callingPoint.estimatedTime === 'On time' ?
-                callingPoint.scheduledTime :
-                `${callingPoint.estimatedTime}, scheduled at ${callingPoint.scheduledTime}`}
-            />
-          ))}
-        </List.Section>
+        <FlatList
+          data={callingPoints}
+          renderItem={renderItem}
+          
+        />
       </>
     );
   }
