@@ -36,7 +36,6 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   const colorScheme = useColorScheme();
-  console.log(colorScheme);
   const isThemeDark = colorScheme === 'dark';
   const [colours, setColours] = useState(null);
   const [theme, setTheme] = useState(isThemeDark ? CombinedDarkTheme : CombinedDefaultTheme);

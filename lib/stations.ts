@@ -8,7 +8,6 @@ let stationList: fmtproto.StationList;
 const loadStations = async () => {
   if (!stationList) {
     const stationPb = require('../assets/stations.pb');
-    console.log(stationPb)
     try {
       const array = await fetchAssetAsArray(stationPb);
       

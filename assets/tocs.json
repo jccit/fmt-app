@@ -1,0 +1,131 @@
+{
+  "tocs": {
+    "VT":{
+      "name": "Avanti West Coast"
+    },
+    "CC":{
+      "name": "c2c"
+    },
+    "CS":{
+      "name": "Caledonian Sleeper"
+    },
+    "CH":{
+      "name": "Chiltern Railways"
+    },
+    "XC":{
+      "name": "CrossCountry"
+    },
+    "EM":{
+      "name": "East Midlands Railway"
+    },
+    "ES":{
+      "name": "Eurostar"
+    },
+    "GX":{
+      "name": "Gatwick Express"
+    },
+    "XP":{
+      "name": "Glasgow Prestwick Airport Ltd"
+    },
+    "GC":{
+      "name": "Grand Central"
+    },
+    "GN":{
+      "name": "Great Northern"
+    },
+    "GW":{
+      "name": "Great Western Railway"
+    },
+    "LE":{
+      "name": "Greater Anglia"
+    },
+    "HX":{
+      "name": "Heathrow Express"
+    },
+    "HT":{
+      "name": "Hull Trains"
+    },
+    "IL":{
+      "name": "Island Line"
+    },
+    "GR":{
+      "name": "LNER"
+    },
+    "LN":{
+      "name": "London Northwestern Railway"
+    },
+    "LO":{
+      "name": "London Overground"
+    },
+    "XS":{
+      "name": "London Southend Airport"
+    },
+    "LT":{
+      "name": "London Underground"
+    },
+    "LD":{
+      "name": "Lumo"
+    },
+    "ME":{
+      "name": "Merseyrail",
+      "bg": "#FCDF27",
+      "text": "#383D3B"
+    },
+    "ZN":{
+      "name": "National Rail",
+      "bg": "#133A64",
+      "text": "#EAEAEA"
+    },
+    "XX":{
+      "name": "National Rail",
+      "bg": "#133A64",
+      "text": "#EAEAEA"
+    },
+    "NR":{
+      "name": "Network Rail",
+      "bg": "#DB782C",
+      "text": "#00506E"
+    },
+    "NT":{
+      "name": "Northern",
+      "bg": "#262563",
+      "text": "#FFFFFF"
+    },
+    "SR":{
+      "name": "ScotRail"
+    },
+    "SW":{
+      "name": "South Western Railway"
+    },
+    "SE":{
+      "name": "Southeastern"
+    },
+    "SN":{
+      "name": "Southern"
+    },
+    "SX":{
+      "name": "Stansted Express"
+    },
+    "XR":{
+      "name": "TfL Rail"
+    },
+    "TL":{
+      "name": "Thameslink"
+    },
+    "TP":{
+      "name": "TransPennine Express"
+    },
+    "GM":{
+      "name": "Transport for Greater Manchester"
+    },
+    "AW":{
+      "name": "Transport for Wales"
+    },
+    "WM":{
+      "name": "West Midlands Railway"
+    },
+    "LM":{
+      "name": "West Midlands Trains"
+    }
+  }
+}

@@ -1,13 +1,15 @@
-import ReactNative from 'react-native';
+import ReactNative, { Platform } from 'react-native';
 import color from 'color';
-const { MaterialYouModule } = ReactNative.NativeModules;
 
 export async function getColours() {
   try {
-    return await MaterialYouModule.getColours();
-  } catch (e) {
-    return null;
-  }
+    if (Platform.OS === 'android') {
+      const { MaterialYouModule } = ReactNative.NativeModules;
+      return await MaterialYouModule.getColours();
+    }
+  } catch (e) {}
+
+  return null;
 }
 
 export async function computeTheme(defaultTheme: any, darkTheme: any, colours: any) {
@@ -40,8 +42,5 @@ export async function computeTheme(defaultTheme: any, darkTheme: any, colours: a
     }
   };
 
-  const out = { light, dark };
-  console.log(out);
-
-  return out;
+  return { light, dark };
 }

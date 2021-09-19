@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { gql, useQuery, NetworkStatus } from '@apollo/client';
 import { Text, List } from 'react-native-paper';
 import { FlatList, RefreshControl } from 'react-native';
+import OperatorLogo from './OperatorLogo';
 
 interface IDepartureItemProps {
   scheduledDeparture: string;
   serviceID: string;
   platform: string;
+  operatorCode: string;
   destination: {
     name: string;
   }
@@ -18,6 +20,7 @@ const DepartureItem = (props: IDepartureItemProps) => {
     <List.Item
       title={`${props.scheduledDeparture} - ${props.destination.name}`}
       description={`Platform ${props.platform || 'unknown'}`}
+      right={rProps => <OperatorLogo code={props.operatorCode} />}
       onPress={() => props.navigation.navigate('Service', { id: props.serviceID })}
     />
   );
@@ -38,6 +41,7 @@ const DepartureList = (props: IDepartureListProps) => {
         serviceID
         scheduledDeparture
         platform
+        operatorCode
         destination {
           name
         }
