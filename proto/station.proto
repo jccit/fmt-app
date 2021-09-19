@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package fmtproto;
+
+option go_package = "/pb";
+
+message Station {
+    string crs = 1;
+    string name = 2;
+    string operator = 3;
+
+    float latitude = 4;
+    float longitude = 5;
+}
+
+message StationList {
+    repeated Station stations = 1;
+}
