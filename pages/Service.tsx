@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { List, Text } from 'react-native-paper';
+import { ActivityIndicator, List, Text } from 'react-native-paper';
 import { FlatList, RefreshControl } from 'react-native';
 import { useQuery, gql, NetworkStatus } from '@apollo/client';
+import Centre from '../components/Centre';
 
 const Service = (props: { route: any }) => {
   const { route, navigation } = props;
@@ -67,30 +68,40 @@ const Service = (props: { route: any }) => {
 
   if (loading && networkStatus != NetworkStatus.refetch) {
     return (
-      <Text>Loading</Text>
+      <Centre>
+        <ActivityIndicator />
+      </Centre>
     )
   }
 
   if (data) {
     const callingPoints = data.service.subsequentCallingPoints;
-    const destination = callingPoints[callingPoints.length - 1];
 
-    navigation.setOptions({ title: `${data.service.scheduledDeparture} to ${destination.name}` });
+    if (callingPoints) {
+      const destination = callingPoints[callingPoints.length - 1];
+      navigation.setOptions({ title: `${data.service.scheduledDeparture} to ${destination.name}` });
     
+      return (
+        <>
+          <FlatList
+            data={callingPoints}
+            renderItem={renderItem}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+              />
+            }
+          />
+        </>
+      );
+    }
+
     return (
-      <>
-        <FlatList
-          data={callingPoints}
-          renderItem={renderItem}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-            />
-          }
-        />
-      </>
-    );
+      <Centre>
+        <Text style={{fontSize: 20}}>Service has no calling points</Text>
+      </Centre>
+    )
   }
 
   return (

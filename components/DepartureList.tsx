@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { gql, useQuery, NetworkStatus } from '@apollo/client';
-import { Text, List } from 'react-native-paper';
+import { Text, List, ActivityIndicator } from 'react-native-paper';
 import { FlatList, RefreshControl } from 'react-native';
 import OperatorLogo from './OperatorLogo';
+import Centre from './Centre';
 
 interface IDepartureItemProps {
   scheduledDeparture: string;
@@ -63,7 +64,9 @@ const DepartureList = (props: IDepartureListProps) => {
 
   if (loading && networkStatus != NetworkStatus.refetch) {
     return (
-      <Text>Loading</Text>
+      <Centre>
+        <ActivityIndicator />
+      </Centre>
     )
   }
 
@@ -84,7 +87,9 @@ const DepartureList = (props: IDepartureListProps) => {
   }
 
   return (
-    <Text>There was an error showing departures</Text>
+    <Centre>
+      <Text style={{ fontSize: 18 }}>No departures</Text>
+    </Centre>
   )
 }
 

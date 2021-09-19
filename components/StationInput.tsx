@@ -3,7 +3,7 @@ import { TextInput, StyleSheet } from 'react-native';
 import { Chip, IconButton, Surface, useTheme } from 'react-native-paper';
 import color from 'color';
 import StationAutocomplete from './StationAutocomplete';
-import { IStation } from '../lib/stations';
+import { IStation, searchStations } from '../lib/stations';
 
 interface IStationInputProps {
   onChange: (station?: IStation) => void;
@@ -37,7 +37,7 @@ const StationInput = (props: IStationInputProps) => {
   const inputRef = useRef<TextInput>(null);
   const theme = useTheme();
 
-  const { colors, roundness, dark, fonts } = theme;
+  const { colors, dark, fonts } = theme;
   const textColor = colors.text;
   const font = fonts.regular;
   const iconColor = dark ? textColor : color(textColor).alpha(0.54).rgb().string();
@@ -80,11 +80,25 @@ const StationInput = (props: IStationInputProps) => {
     props.onChange(undefined);
   }
 
+  const submit = async () => {
+    const stations = await searchStations(text);
+    if (stations.length > 0) {
+      onItemSelected(stations[0]);
+    }
+  }
+
   const placeholder = selected ? '' : 'Search for a station';
+
+  const containerStyle = StyleSheet.flatten([
+    styles.container,
+    {
+      backgroundColor: theme.colors.surface
+    }
+  ]);
 
   return (
     <>
-      <Surface style={{ ...styles.container, backgroundColor: theme.colors.surface }}>
+      <Surface style={containerStyle}>
         <IconButton
           icon="magnify"
           borderless
@@ -92,13 +106,14 @@ const StationInput = (props: IStationInputProps) => {
           rippleColor={rippleColor}
         />
         { !!selected ? (
-          <Chip icon="train" style={{ backgroundColor: color(theme.colors.surface).lighten(0.5).hex() }}>{selected.name}</Chip>
+          <Chip icon="train" style={{ backgroundColor: color(theme.colors.surface).lighten(0.5).hex() }} onPress={reset}>{selected.name}</Chip>
         ) : null }
         <TextInput
           style={[styles.input, { color: textColor, ...font }]}
           placeholder={placeholder}
           value={text}
           onChangeText={onChangeText}
+          onSubmitEditing={submit}
           editable={!selected}
           focusable={!selected}
           ref={inputRef}
@@ -119,7 +134,7 @@ const StationInput = (props: IStationInputProps) => {
           />
         ) : null }
       </Surface>
-      { showAutocomplete ? <StationAutocomplete input={autocompleteText} onChange={onItemSelected} /> : null }
+      { !selected && showAutocomplete ? <StationAutocomplete input={autocompleteText} onChange={onItemSelected} /> : null }
     </>
   )
 }
