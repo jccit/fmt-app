@@ -11,7 +11,9 @@ interface IStationAutocompleteProps {
 
 const styles = StyleSheet.create({
   surface: {
-    padding: 8
+    borderRadius: 24,
+    marginLeft: 16,
+    marginRight: 16,
   }
 });
 

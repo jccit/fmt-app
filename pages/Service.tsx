@@ -4,7 +4,7 @@ import { FlatList, RefreshControl } from 'react-native';
 import { useQuery, gql, NetworkStatus } from '@apollo/client';
 
 const Service = (props: { route: any }) => {
-  const { route } = props;
+  const { route, navigation } = props;
   const { id } = route.params;
   const [refreshing, setRefreshing] = useState(false);
   const { loading, data, refetch, networkStatus } = useQuery(gql`
@@ -54,6 +54,7 @@ const Service = (props: { route: any }) => {
       <List.Item
         title={item.name}
         description={getTime(item)}
+        key={item.crs}
       />
     );
   }
@@ -73,14 +74,14 @@ const Service = (props: { route: any }) => {
   if (data) {
     const callingPoints = data.service.subsequentCallingPoints;
     const destination = callingPoints[callingPoints.length - 1];
+
+    navigation.setOptions({ title: `${data.service.scheduledDeparture} to ${destination.name}` });
     
     return (
       <>
-        <Text>{data.service.scheduledDeparture} to {destination.name}</Text>
         <FlatList
           data={callingPoints}
           renderItem={renderItem}
-          keyExtractor={(item, _) => item.crs}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}

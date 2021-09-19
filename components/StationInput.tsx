@@ -13,7 +13,11 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    elevation: 4
+    marginTop: 10,
+    marginLeft: 16,
+    marginRight: 16,
+    marginBottom: 16,
+    borderRadius: 50
   },
   input: {
     flex: 1,
@@ -80,7 +84,7 @@ const StationInput = (props: IStationInputProps) => {
 
   return (
     <>
-      <Surface style={styles.container}>
+      <Surface style={{ ...styles.container, backgroundColor: theme.colors.surface }}>
         <IconButton
           icon="magnify"
           borderless
@@ -88,7 +92,7 @@ const StationInput = (props: IStationInputProps) => {
           rippleColor={rippleColor}
         />
         { !!selected ? (
-          <Chip icon="train">{selected.name}</Chip>
+          <Chip icon="train" style={{ backgroundColor: color(theme.colors.surface).lighten(0.5).hex() }}>{selected.name}</Chip>
         ) : null }
         <TextInput
           style={[styles.input, { color: textColor, ...font }]}

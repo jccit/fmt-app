@@ -15,7 +15,7 @@ const StationAutocompleteItem = (props: IStationAutocompleteItemProps) => {
   }
 
   return (
-    <TouchableRipple onPress={onClick}>
+    <TouchableRipple onPress={onClick} style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 4, paddingBottom: 4}}>
       <Subheading>{station.name}</Subheading>
     </TouchableRipple>
   );

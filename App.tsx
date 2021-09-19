@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useColorScheme } from 'react-native';
 import {
   DarkTheme as PaperDarkTheme,
@@ -20,6 +20,7 @@ import Service from './pages/Service';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack/lib/typescript/src/types';
 import { StatusBar } from 'expo-status-bar';
 import * as Linking from 'expo-linking';
+import { computeTheme, getColours } from './lib/colours';
 
 const client = new ApolloClient({
   uri: 'https://fmt-graphql.fly.dev',
@@ -28,18 +29,29 @@ const client = new ApolloClient({
 
 const prefix = Linking.createURL('/');
 
-const CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
-const CombinedDarkTheme = merge(PaperDarkTheme, NavigationDarkTheme);
+let CombinedDefaultTheme = merge(PaperDefaultTheme, NavigationDefaultTheme);
+let CombinedDarkTheme = merge(PaperDarkTheme, NavigationDarkTheme);
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   const colorScheme = useColorScheme();
+  console.log(colorScheme);
   const isThemeDark = colorScheme === 'dark';
+  const [colours, setColours] = useState(null);
+  const [theme, setTheme] = useState(isThemeDark ? CombinedDarkTheme : CombinedDefaultTheme);
 
-  let theme = isThemeDark ? CombinedDarkTheme : CombinedDefaultTheme;
+  useEffect(() => {
+    getColours().then(setColours);
+  }, [isThemeDark]);
 
-  const preferences = React.useMemo(
+  useEffect(() => {
+    computeTheme(CombinedDefaultTheme, CombinedDarkTheme, colours).then((themes: any) => {
+      setTheme(isThemeDark ? themes.dark : themes.light);
+    });
+  }, [isThemeDark, colours]);
+
+  const preferences = useMemo(
     () => ({
       isThemeDark,
     }),
@@ -61,7 +73,7 @@ export default function App() {
       <ApolloProvider client={client}>
         <PaperProvider theme={theme}>
           <NavigationContainer linking={linking} theme={theme}>
-            <StatusBar style="light" />
+            <StatusBar style={isThemeDark ? 'light' : 'dark'} />
             <Stack.Navigator
               initialRouteName="Departures"
               screenOptions={{
