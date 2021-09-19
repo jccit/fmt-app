@@ -1,17 +1,52 @@
-import React, { useState } from 'react';
-import { IStation, searchStations } from '../lib/stations';
-import { Autocomplete } from 'react-native-paper-autocomplete';
+import React, { useState, useRef } from 'react';
+import { TextInput, StyleSheet } from 'react-native';
+import { Chip, IconButton, Surface, useTheme } from 'react-native-paper';
+import color from 'color';
+import StationAutocomplete from './StationAutocomplete';
+import { IStation } from '../lib/stations';
 
 interface IStationInputProps {
   onChange: (station?: IStation) => void;
 }
 
-const StationInput = (props: IStationInputProps) => {
-  const [value, setValue] = useState<IStation>();
-  const [filteredStations, setFilteredStations] = useState<IStation[]>([]);
-  const [debounce, setDebounce] = useState<NodeJS.Timeout>();
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    elevation: 4
+  },
+  input: {
+    flex: 1,
+    fontSize: 18,
+    paddingLeft: 8,
+    alignSelf: 'stretch',
+    minWidth: 0,
+  },
+});
 
-  const onChange = async (input: string) => {
+const StationInput = (props: IStationInputProps) => {
+  const [text, setText] = useState('');
+  const [showAutocomplete, setShowAutocomplete] = useState(false);
+  const [autocompleteText, setAutocompleteText] = useState('');
+  const [selected, setSelected] = useState<IStation>();
+  const [debounce, setDebounce] = useState<NodeJS.Timeout>();
+  const inputRef = useRef<TextInput>(null);
+  const theme = useTheme();
+
+  const { colors, roundness, dark, fonts } = theme;
+  const textColor = colors.text;
+  const font = fonts.regular;
+  const iconColor = dark ? textColor : color(textColor).alpha(0.54).rgb().string();
+  const rippleColor = color(textColor).alpha(0.32).rgb().string();
+
+  const onChangeText = async (input: string) => {
+    setText(input);
+
+    if (input.length < 3) {
+      setShowAutocomplete(false);
+      setAutocompleteText('');
+    }
+
     if (debounce) {
       clearTimeout(debounce);
     }
@@ -22,31 +57,66 @@ const StationInput = (props: IStationInputProps) => {
     });
 
     if (input.length >= 3) {
-      setFilteredStations(await searchStations(input));
-    } else {
-      setFilteredStations([]);
+      setAutocompleteText(input);
+      setShowAutocomplete(true);
     }
   }
 
-  const stationChanged = (station?: IStation) => {
-    setValue(station);
-
-    // Update parent component
+  const onItemSelected = (station?: IStation) => {
+    setText('');
+    setSelected(station);
+    setShowAutocomplete(false);
     props.onChange(station);
   }
 
+  const reset = () => {
+    setText('');
+    setSelected(undefined);
+    setShowAutocomplete(false);
+    props.onChange(undefined);
+  }
+
+  const placeholder = selected ? '' : 'Search for a station';
+
   return (
-    <Autocomplete
-      value={value}
-      onChange={stationChanged}
-      options={filteredStations}
-      getOptionLabel={(item) => item.name}
-      getOptionValue={(item) => item.crs}
-      inputProps={{
-        label: 'Search for a station',
-        onChangeText: onChange
-      }}
-    />
+    <>
+      <Surface style={styles.container}>
+        <IconButton
+          icon="magnify"
+          borderless
+          color={iconColor}
+          rippleColor={rippleColor}
+        />
+        { !!selected ? (
+          <Chip icon="train">{selected.name}</Chip>
+        ) : null }
+        <TextInput
+          style={[styles.input, { color: textColor, ...font }]}
+          placeholder={placeholder}
+          value={text}
+          onChangeText={onChangeText}
+          editable={!selected}
+          focusable={!selected}
+          ref={inputRef}
+          placeholderTextColor={colors.placeholder}
+          selectionColor={colors.primary}
+          underlineColorAndroid="transparent"
+          returnKeyType="search"
+          keyboardAppearance={dark ? 'dark' : 'light'}
+          accessibilityRole="search"
+        />
+        { !!selected ? (
+          <IconButton
+            icon="close"
+            onPress={reset}
+            borderless
+            color={iconColor}
+            rippleColor={rippleColor}
+          />
+        ) : null }
+      </Surface>
+      { showAutocomplete ? <StationAutocomplete input={autocompleteText} onChange={onItemSelected} /> : null }
+    </>
   )
 }
 
