@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Text } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { Chip } from 'react-native-paper';
 
 let tocs: any = null;
 
@@ -37,8 +38,19 @@ const OperatorLogo = (props: { code: string }) => {
   }, [tocs]);
 
   return (
-    <Text style={{ ...colours }}>{name}</Text>
+    <View style={styles.container}>
+      <Chip style={{ backgroundColor: colours.backgroundColor }} textStyle={{ color: colours.color }}>{name}</Chip>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
+});
 
 export default OperatorLogo;
