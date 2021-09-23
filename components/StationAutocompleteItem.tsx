@@ -1,5 +1,6 @@
 import React from 'react';
-import { Subheading, TouchableRipple } from 'react-native-paper';
+import { View } from 'react-native';
+import { Text, Subheading, TouchableRipple } from 'react-native-paper';
 import { IStation } from '../lib/stations';
 
 interface IStationAutocompleteItemProps {
@@ -16,7 +17,10 @@ const StationAutocompleteItem = (props: IStationAutocompleteItemProps) => {
 
   return (
     <TouchableRipple onPress={onClick} style={{ paddingLeft: 16, paddingRight: 16, paddingTop: 4, paddingBottom: 4}}>
-      <Subheading>{station.name}</Subheading>
+      <View>
+        <Subheading>{station.name}</Subheading>
+        {station.distance ? <Text>{station.distance.toFixed(1)}km</Text> : null }
+      </View>
     </TouchableRipple>
   );
 }

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, Platform, StyleSheet, View } from 'react-native';
 import { Surface, Text } from 'react-native-paper';
+import * as Location from 'expo-location';
 import { IStation, searchStations } from '../lib/stations';
 import StationAutocompleteItem from './StationAutocompleteItem';
 
 interface IStationAutocompleteProps {
   input: string;
+  location?: Location.LocationObject;
   onChange: (station?: IStation) => void;
 }
 
@@ -22,10 +24,10 @@ const StationAutocomplete = (props: IStationAutocompleteProps) => {
   const [filteredStations, setFilteredStations] = useState<IStation[]>([]);
 
   useEffect(() => {
-    searchStations(props.input).then(stations => {
+    searchStations(props.input, props.location).then(stations => {
       setFilteredStations(stations);
     });
-  }, [props.input]);
+  }, [props.input, props.location]);
 
   const stationChanged = (station?: IStation) => {
     setSelected(station);

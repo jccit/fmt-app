@@ -2,8 +2,10 @@ import React, { useState, useRef } from 'react';
 import { TextInput, StyleSheet } from 'react-native';
 import { Chip, IconButton, Surface, useTheme } from 'react-native-paper';
 import color from 'color';
+import * as Location from 'expo-location';
 import StationAutocomplete from './StationAutocomplete';
 import { IStation, searchStations } from '../lib/stations';
+import { getLocation } from '../lib/location';
 
 interface IStationInputProps {
   onChange: (station?: IStation) => void;
@@ -34,6 +36,7 @@ const StationInput = (props: IStationInputProps) => {
   const [autocompleteText, setAutocompleteText] = useState('');
   const [selected, setSelected] = useState<IStation>();
   const [debounce, setDebounce] = useState<NodeJS.Timeout>();
+  const [location, setLocation] = useState<Location.LocationObject>();
   const inputRef = useRef<TextInput>(null);
   const theme = useTheme();
 
@@ -71,6 +74,13 @@ const StationInput = (props: IStationInputProps) => {
     setSelected(station);
     setShowAutocomplete(false);
     props.onChange(station);
+  }
+
+  const onFocus = async () => {
+    const location = await getLocation();
+    if (location) {
+      setLocation(location);
+    }
   }
 
   const reset = () => {
@@ -112,6 +122,7 @@ const StationInput = (props: IStationInputProps) => {
           style={[styles.input, { color: textColor, ...font }]}
           placeholder={placeholder}
           value={text}
+          onFocus={onFocus}
           onChangeText={onChangeText}
           onSubmitEditing={submit}
           editable={!selected}
@@ -134,7 +145,7 @@ const StationInput = (props: IStationInputProps) => {
           />
         ) : null }
       </Surface>
-      { !selected && showAutocomplete ? <StationAutocomplete input={autocompleteText} onChange={onItemSelected} /> : null }
+      { !selected && showAutocomplete ? <StationAutocomplete input={autocompleteText} location={location} onChange={onItemSelected} /> : null }
     </>
   )
 }
